@@ -6,9 +6,19 @@
   <title>YouBike 臺北市公共自行車即時資訊</title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 
   <style>
     body{ padding: 1em;  }
+    .fas {
+      padding: 3px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+
+    }
+    .fas:hover { 
+      background-color: rgba(0,0,0,.05);
+    }
   </style>
 
 </head>
@@ -24,13 +34,13 @@
           <th>#</th>
           <th>場站名稱</th>
           <th>場站區域</th>
-          <th>目前可用車輛</th>
-          <th>總停車格</th>
+          <th @click="sortSbi">目前可用車輛 <i class="fas fa-sort"></i></th>
+          <th @click="sortTot">總停車格 <i class="fas fa-sort"></i></th>
           <th>資料更新時間</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="s in ubikeStops">
+        <tr v-for="s in sort">
           <td>{{ s.sno }}</td>
           <td>{{ s.sna }}</td>
           <td>{{ s.sarea }}</td>

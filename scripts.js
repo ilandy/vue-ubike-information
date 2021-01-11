@@ -1,7 +1,31 @@
 const vm = Vue.createApp({
     data () {
       return {
-        ubikeStops: []
+        ubikeStops: [],
+        sortMethodSbi: 0,
+        sortMethodTot: 0,
+        sortBy: 'sbi',
+      }
+    },
+    computed: {
+      sort(){
+        // console.log(this.ubikeStops)
+        let oringArr = [...this.ubikeStops];
+        let sortSwitch = this.sortBy === 'sbi' ? 'sortMathodSbi'  : 'sortMathodTot';
+
+        if (this[sortSwitch] === 0) {
+          return this.ubikeStops;
+
+        }
+        if (this[sortSwitch] === 1) {
+          return oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy])
+
+        }
+        if (this[sortSwitch] === 2) {
+          return oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy] )
+
+        }
+
       }
     },
     methods: {
@@ -17,7 +41,26 @@ const vm = Vue.createApp({
         time.push(t.substr(12, 2));
 
         return date.join("/") + ' ' + time.join(":");
+      },
+      /* TODO:
+         1. 修改 sortSbi & sortTot 重複的程式碼
+         2. 調整程式碼 為較易讀的狀態
+      */
+      sortSbi (){
+        this.sortBy = 'sbi';
+        this.sortMathodTot = 0;
+        this.sortMathodSbi = (this.sortMathodSbi+1)%3;
+
+      },
+      sortTot (){
+        this.sortBy = 'tot';
+        this.sortMathodSbi = 0;
+        this.sortMathodTot = (this.sortMathodTot+1)%3;
+
       }
+      
+      
+
     },
     created() {
 
@@ -35,6 +78,5 @@ const vm = Vue.createApp({
               // 將 json 轉陣列後存入 this.ubikeStops
               this.ubikeStops = Object.keys(res.retVal).map(key => res.retVal[key]);
           });
-
     }
 }).mount('#app');
