@@ -2,6 +2,7 @@ const vm = Vue.createApp({
   data() {
     return {
       ubikeStops: [],
+      keyword: "",
       sortMethod: {
         sbi: 0,
         tot: 0,
@@ -12,16 +13,17 @@ const vm = Vue.createApp({
   computed: {
     sort() {
       // console.log(this.ubikeStops)
-      let oringArr = [...this.ubikeStops];
-      let sortSwitch = this.sortBy === "sbi" ? "sbi" : "tot";
+      let oringArr = this.ubikeStops.filter((d) =>
+        d.sna.includes(this.keyword)
+      );
 
-      if (this.sortMethod[sortSwitch] === 0) {
-        return this.ubikeStops;
+      if (this.sortMethod[this.sortBy] === 0) {
+        return oringArr;
       }
-      if (this.sortMethod[sortSwitch] === 1) {
+      if (this.sortMethod[this.sortBy] === 1) {
         return oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
       }
-      if (this.sortMethod[sortSwitch] === 2) {
+      if (this.sortMethod[this.sortBy] === 2) {
         return oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
       }
     },
