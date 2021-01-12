@@ -34,8 +34,16 @@
           <th>#</th>
           <th>場站名稱</th>
           <th>場站區域</th>
-          <th @click="sortSbi">目前可用車輛 <i class="fas fa-sort"></i></th>
-          <th @click="sortTot">總停車格 <i class="fas fa-sort"></i></th>
+          <th @click="setSortMethod('sbi', 'tot')">目前可用車輛 
+            <i class="fas fa-sort" v-show="sortMethod.sbi === 0"></i>
+            <i class="fas fa-sort-up" v-show="sortMethod.sbi === 1"></i>
+            <i class="fas fa-sort-down" v-show="sortMethod.sbi === 2"></i>
+          </th>
+          <th @click="setSortMethod('tot', 'sbi')">總停車格 
+            <i class="fas fa-sort" v-show="sortMethod.tot === 0"></i>
+            <i class="fas fa-sort-up" v-show="sortMethod.tot === 1"></i>
+            <i class="fas fa-sort-down" v-show="sortMethod.tot === 2"></i>
+          </th>
           <th>資料更新時間</th>
         </tr>
       </thead>
