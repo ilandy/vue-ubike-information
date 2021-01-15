@@ -22,18 +22,17 @@ const vm = Vue.createApp({
         d.sna.includes(this.keyword)
       );
 
-      if (this.isAsc === null) {
-        return oringArr.slice(
-          this.rowsPerPage * this.page - this.rowsPerPage,
-          this.rowsPerPage * this.page
-        );
-      }
       if (this.isAsc === true) {
-        return oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
+        oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
       }
       if (this.isAsc === false) {
-        return oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
+        oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
       }
+
+      return oringArr.slice(
+        this.rowsPerPage * this.page - this.rowsPerPage,
+        this.rowsPerPage * this.page
+      );
     },
     pages() {
       let arr = this.pageItems.slice(
@@ -60,6 +59,8 @@ const vm = Vue.createApp({
     },
 
     setSortMethod(currntField, otherField) {
+      this.page = 1;
+      this.pageNav.current = 0;
       if (this.sortBy !== currntField) {
         this.sortBy = currntField;
         this.isAsc = true;
