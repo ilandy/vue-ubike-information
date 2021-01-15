@@ -9,9 +9,13 @@ const vm = Vue.createApp({
       },
       sortBy: "sbi",
       pageItems: [], //全部的頁籤
-      currentPage: 1, //當下的頁碼
-      pageContent: 20, // 一頁的內容
-      pageNav: 0, // 頁碼的第幾頁
+      page: 1, //當下的頁碼
+      rowsPerPage: 20, // 一頁的內容
+      pageNav: {
+        current: 0,
+        last: 1,
+      }, // 頁碼的第幾頁
+      pageShowItem: 10, //一次頁籤顯示幾個頁碼
     };
   },
   computed: {
@@ -23,8 +27,8 @@ const vm = Vue.createApp({
 
       if (this.sortMethod[this.sortBy] === 0) {
         return oringArr.slice(
-          this.pageContent * this.currentPage - this.pageContent,
-          this.pageContent * this.currentPage
+          this.rowsPerPage * this.page - this.rowsPerPage,
+          this.rowsPerPage * this.page
         );
       }
       if (this.sortMethod[this.sortBy] === 1) {
@@ -35,20 +39,15 @@ const vm = Vue.createApp({
       }
     },
     /* TODO:
-     1. 優化頁籤的重覆邏輯
-     2. 調整排序為布林值
+     1. 調整排序為布林值
      */
     pages() {
-      if (this.pageNav === 0) {
-        let arr = this.pageItems.slice(0, 10);
-        this.currentPage = arr[0] + 1;
-        return arr;
-      }
-      if (this.pageNav === 1) {
-        let arr = this.pageItems.slice(10, 20);
-        this.currentPage = arr[0] + 1;
-        return arr;
-      }
+      let arr = this.pageItems.slice(
+        this.pageNav.current * this.pageShowItem,
+        (this.pageNav.current + 1) * this.pageShowItem
+      );
+      this.page = arr[0] + 1;
+      return arr;
     },
   },
   methods: {
@@ -72,18 +71,11 @@ const vm = Vue.createApp({
     },
     pageCtrl(direction) {
       // if (this.pageNav < this.pageItems.length / 10) {
-      if (direction === "prev" && this.pageNav > 0) {
-        this.pageNav = this.pageNav - 1;
-
-        return;
+      if (direction === "prev" && this.pageNav.current > 0) {
+        this.pageNav.current = this.pageNav.current - 1;
       }
-      if (
-        direction === "next" &&
-        this.pageNav < this.pageItems.length / 10 - 1
-      ) {
-        this.pageNav = this.pageNav + 1;
-
-        return;
+      if (direction === "next" && this.pageNav.current < this.pageNav.last) {
+        this.pageNav.current = this.pageNav.current + 1;
       }
     },
   },
@@ -102,9 +94,9 @@ const vm = Vue.createApp({
         // 將 json 轉陣列後存入 this.ubikeStops
         this.ubikeStops = Object.keys(res.retVal).map((key) => res.retVal[key]);
         this.pageItems = [
-          ...Array(this.ubikeStops.length / this.pageContent).keys(),
+          ...Array(this.ubikeStops.length / this.rowsPerPage).keys(),
         ];
-        console.log(this.pageItems);
+        this.pageNav.last = this.pageItems.length / this.pageShowItem - 1;
       });
   },
 }).mount("#app");

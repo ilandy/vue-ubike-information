@@ -76,18 +76,17 @@
 
     <nav aria-label="Page navigation example">
       <ul class="pagination">
-        <li class="page-item" @click="pageCtrl('prev')" :class=" { 'disabled' : pageNav === 0 }">
+        <li class="page-item" @click="pageCtrl('prev')" :class=" { 'disabled' : pageNav.current === 0 }">
           <a class="page-link" href="###" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
 
-        <li class="page-item" v-for="(p, idx) in pages" @click="currentPage = p+1"
-          :class=" { 'active' : currentPage === p+1}">
+        <li class="page-item" v-for="(p, idx) in pages" @click="page = p+1" :class=" { 'active' : page === p+1}">
           <a class="page-link" href="###">{{p+1}}</a>
         </li>
 
-        <li class="page-item" @click="pageCtrl('next')" :class=" { 'disabled' : pageNav ===  (pageItems.length/10-1) }">
+        <li class="page-item" @click="pageCtrl('next')" :class=" { 'disabled' : pageNav.current === pageNav.last  }">
           <a class="page-link" href="###" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>
