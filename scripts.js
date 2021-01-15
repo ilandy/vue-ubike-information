@@ -8,6 +8,10 @@ const vm = Vue.createApp({
         tot: 0,
       },
       sortBy: "sbi",
+      pageItems: [], //全部的頁籤
+      currentPage: 1, //當下的頁碼
+      pageContent: 20, // 一頁的內容
+      pageNav: 0, // 頁碼的第幾頁
     };
   },
   computed: {
@@ -18,13 +22,32 @@ const vm = Vue.createApp({
       );
 
       if (this.sortMethod[this.sortBy] === 0) {
-        return oringArr;
+        return oringArr.slice(
+          this.pageContent * this.currentPage - this.pageContent,
+          this.pageContent * this.currentPage
+        );
       }
       if (this.sortMethod[this.sortBy] === 1) {
         return oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
       }
       if (this.sortMethod[this.sortBy] === 2) {
         return oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
+      }
+    },
+    /* TODO:
+     1. 優化頁籤的重覆邏輯
+     2. 調整排序為布林值
+     */
+    pages() {
+      if (this.pageNav === 0) {
+        let arr = this.pageItems.slice(0, 10);
+        this.currentPage = arr[0] + 1;
+        return arr;
+      }
+      if (this.pageNav === 1) {
+        let arr = this.pageItems.slice(10, 20);
+        this.currentPage = arr[0] + 1;
+        return arr;
       }
     },
   },
@@ -47,6 +70,22 @@ const vm = Vue.createApp({
       this.sortMethod[otherField] = 0;
       this.sortMethod[currntField] = (this.sortMethod[currntField] + 1) % 3;
     },
+    pageCtrl(direction) {
+      // if (this.pageNav < this.pageItems.length / 10) {
+      if (direction === "prev" && this.pageNav > 0) {
+        this.pageNav = this.pageNav - 1;
+
+        return;
+      }
+      if (
+        direction === "next" &&
+        this.pageNav < this.pageItems.length / 10 - 1
+      ) {
+        this.pageNav = this.pageNav + 1;
+
+        return;
+      }
+    },
   },
   created() {
     // 欄位說明請參照:
@@ -62,6 +101,10 @@ const vm = Vue.createApp({
       .then((res) => {
         // 將 json 轉陣列後存入 this.ubikeStops
         this.ubikeStops = Object.keys(res.retVal).map((key) => res.retVal[key]);
+        this.pageItems = [
+          ...Array(this.ubikeStops.length / this.pageContent).keys(),
+        ];
+        console.log(this.pageItems);
       });
   },
 }).mount("#app");

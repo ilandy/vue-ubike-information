@@ -1,45 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>YouBike 臺北市公共自行車即時資訊</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
   <style>
-    body{ padding: 1em;  }
+    body {
+      padding: 1em;
+    }
+
     .fas {
       padding: 3px 10px;
       border-radius: 2px;
       cursor: pointer;
 
     }
-    .fas:hover { 
-      background-color: rgba(0,0,0,.05);
+
+    .fas:hover {
+      background-color: rgba(0, 0, 0, .05);
     }
   </style>
 
 </head>
+
 <body>
 
   <h1>YouBike 臺北市公共自行車即時資訊</h1>
 
   <div id="app">
     <input type="text" placeholder="請輸入想找的站點關鍵字" v-model="keyword">
+
+
+
+
+
     <table class="table table-striped">
       <thead>
         <tr>
           <th>#</th>
           <th>場站名稱</th>
           <th>場站區域</th>
-          <th @click="setSortMethod('sbi', 'tot')">目前可用車輛 
+          <th @click="setSortMethod('sbi', 'tot')">目前可用車輛
             <i class="fas fa-sort" v-show="sortMethod.sbi === 0"></i>
             <i class="fas fa-sort-up" v-show="sortMethod.sbi === 1"></i>
             <i class="fas fa-sort-down" v-show="sortMethod.sbi === 2"></i>
           </th>
-          <th @click="setSortMethod('tot', 'sbi')">總停車格 
+          <th @click="setSortMethod('tot', 'sbi')">總停車格
             <i class="fas fa-sort" v-show="sortMethod.tot === 0"></i>
             <i class="fas fa-sort-up" v-show="sortMethod.tot === 1"></i>
             <i class="fas fa-sort-down" v-show="sortMethod.tot === 2"></i>
@@ -60,10 +73,33 @@
 
     </table>
 
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" @click="pageCtrl('prev')" :class=" { 'disabled' : pageNav === 0 }">
+          <a class="page-link" href="###" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+
+        <li class="page-item" v-for="(p, idx) in pages" @click="currentPage = p+1"
+          :class=" { 'active' : currentPage === p+1}">
+          <a class="page-link" href="###">{{p+1}}</a>
+        </li>
+
+        <li class="page-item" @click="pageCtrl('next')" :class=" { 'disabled' : pageNav ===  (pageItems.length/10-1) }">
+          <a class="page-link" href="###" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
   </div>
 
   <script src="https://unpkg.com/vue@next"></script>
   <script src="./scripts.js?v=2020081401"></script>
 
 </body>
+
 </html>
