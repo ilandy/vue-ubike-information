@@ -3,11 +3,8 @@ const vm = Vue.createApp({
     return {
       ubikeStops: [],
       keyword: "",
-      sortMethod: {
-        sbi: 0,
-        tot: 0,
-      },
       sortBy: "sbi",
+      isAsc: null,
       pageItems: [], //全部的頁籤
       page: 1, //當下的頁碼
       rowsPerPage: 20, // 一頁的內容
@@ -25,22 +22,19 @@ const vm = Vue.createApp({
         d.sna.includes(this.keyword)
       );
 
-      if (this.sortMethod[this.sortBy] === 0) {
+      if (this.isAsc === null) {
         return oringArr.slice(
           this.rowsPerPage * this.page - this.rowsPerPage,
           this.rowsPerPage * this.page
         );
       }
-      if (this.sortMethod[this.sortBy] === 1) {
+      if (this.isAsc === true) {
         return oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
       }
-      if (this.sortMethod[this.sortBy] === 2) {
+      if (this.isAsc === false) {
         return oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
       }
     },
-    /* TODO:
-     1. 調整排序為布林值
-     */
     pages() {
       let arr = this.pageItems.slice(
         this.pageNav.current * this.pageShowItem,
@@ -64,18 +58,28 @@ const vm = Vue.createApp({
 
       return date.join("/") + " " + time.join(":");
     },
+
     setSortMethod(currntField, otherField) {
-      this.sortBy = currntField;
-      this.sortMethod[otherField] = 0;
-      this.sortMethod[currntField] = (this.sortMethod[currntField] + 1) % 3;
+      if (this.sortBy !== currntField) {
+        this.sortBy = currntField;
+        this.isAsc = true;
+        return;
+      }
+      if (this.sortBy === currntField && this.isAsc === false) {
+        this.isAsc = null;
+        return;
+      }
+      this.isAsc = !this.isAsc;
     },
     pageCtrl(direction) {
       // if (this.pageNav < this.pageItems.length / 10) {
       if (direction === "prev" && this.pageNav.current > 0) {
         this.pageNav.current = this.pageNav.current - 1;
+        return;
       }
       if (direction === "next" && this.pageNav.current < this.pageNav.last) {
         this.pageNav.current = this.pageNav.current + 1;
+        return;
       }
     },
   },
