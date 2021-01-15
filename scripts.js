@@ -21,6 +21,12 @@ const vm = Vue.createApp({
       let oringArr = this.ubikeStops.filter((d) =>
         d.sna.includes(this.keyword)
       );
+      this.pageItems = [
+        ...Array(Math.ceil(oringArr.length / this.rowsPerPage)).keys(),
+      ];
+
+      this.pageNav.last =
+        Math.ceil(this.pageItems.length / this.pageShowItem) - 1;
 
       if (this.isAsc === true) {
         oringArr.sort((a, b) => a[this.sortBy] - b[this.sortBy]);
@@ -28,6 +34,7 @@ const vm = Vue.createApp({
       if (this.isAsc === false) {
         oringArr.sort((a, b) => b[this.sortBy] - a[this.sortBy]);
       }
+      console.log(this.page);
 
       return oringArr.slice(
         this.rowsPerPage * this.page - this.rowsPerPage,
@@ -39,7 +46,7 @@ const vm = Vue.createApp({
         this.pageNav.current * this.pageShowItem,
         (this.pageNav.current + 1) * this.pageShowItem
       );
-      this.page = arr[0] + 1;
+
       return arr;
     },
   },
@@ -76,12 +83,15 @@ const vm = Vue.createApp({
       // if (this.pageNav < this.pageItems.length / 10) {
       if (direction === "prev" && this.pageNav.current > 0) {
         this.pageNav.current = this.pageNav.current - 1;
-        return;
       }
       if (direction === "next" && this.pageNav.current < this.pageNav.last) {
         this.pageNav.current = this.pageNav.current + 1;
-        return;
       }
+      this.page = this.pageNav.current * 10 + 1;
+    },
+    changePage(page) {
+      this.page = page + 1;
+      // console.log(this.page);
     },
   },
   created() {
@@ -98,10 +108,6 @@ const vm = Vue.createApp({
       .then((res) => {
         // 將 json 轉陣列後存入 this.ubikeStops
         this.ubikeStops = Object.keys(res.retVal).map((key) => res.retVal[key]);
-        this.pageItems = [
-          ...Array(this.ubikeStops.length / this.rowsPerPage).keys(),
-        ];
-        this.pageNav.last = this.pageItems.length / this.pageShowItem - 1;
       });
   },
 }).mount("#app");

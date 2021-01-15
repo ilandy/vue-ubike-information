@@ -35,13 +35,11 @@
   <h1>YouBike 臺北市公共自行車即時資訊</h1>
 
   <div id="app">
-    <input type="text" placeholder="請輸入想找的站點關鍵字" v-model="keyword">
+    <input type="text" placeholder="請輸入想找的站點關鍵字" v-model.lazy="keyword">
 
+    <div v-if="sort.length == 0"> 沒有符合關鍵字的站點資訊</div>
 
-
-
-
-    <table class="table table-striped">
+    <table class="table table-striped" v-if="sort.length !== 0">
       <thead>
         <tr>
           <th>#</th>
@@ -72,9 +70,8 @@
       </tbody>
 
     </table>
-
-
-    <nav aria-label="Page navigation example">
+    <!-- {{page}} -->
+    <nav aria-label="Page navigation example" v-if="sort.length !== 0">
       <ul class="pagination">
         <li class="page-item" @click="pageCtrl('prev')" :class=" { 'disabled' : pageNav.current === 0 }">
           <a class="page-link" href="###" aria-label="Previous">
@@ -82,7 +79,7 @@
           </a>
         </li>
 
-        <li class="page-item" v-for="(p, idx) in pages" @click="page = p+1" :class=" { 'active' : page === p+1}">
+        <li class="page-item" v-for="(p, idx) in pages" @click="changePage(p)" :class=" { 'active' : page === p+1}">
           <a class="page-link" href="###">{{p+1}}</a>
         </li>
 
