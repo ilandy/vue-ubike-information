@@ -1,36 +1,65 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>YouBike 臺北市公共自行車即時資訊</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
   <style>
-    body{ padding: 1em;  }
+    body {
+      padding: 1em;
+    }
+
+    .fas {
+      padding: 3px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+
+    }
+
+    .fas:hover {
+      background-color: rgba(0, 0, 0, .05);
+    }
   </style>
 
 </head>
+
 <body>
 
   <h1>YouBike 臺北市公共自行車即時資訊</h1>
 
   <div id="app">
+    <input type="text" placeholder="請輸入想找的站點關鍵字" v-model.lazy="keyword">
 
-    <table class="table table-striped">
+    <div v-if="sort.length == 0"> 沒有符合關鍵字的站點資訊</div>
+
+    <table class="table table-striped" v-if="sort.length !== 0">
       <thead>
         <tr>
           <th>#</th>
           <th>場站名稱</th>
           <th>場站區域</th>
-          <th>目前可用車輛</th>
-          <th>總停車格</th>
+          <th @click="setSortMethod('sbi', 'tot')">目前可用車輛
+            <i class="fas fa-sort" v-show="isAsc === null || sortBy !== 'sbi'"></i>
+            <i class="fas fa-sort-up" v-show="isAsc === true && sortBy === 'sbi'"></i>
+            <i class="fas fa-sort-down" v-show="isAsc === false && sortBy === 'sbi'"></i>
+          </th>
+          <th @click="setSortMethod('tot', 'sbi')">總停車格
+            <i class="fas fa-sort" v-show="isAsc === null || sortBy !== 'tot'"></i>
+            <i class="fas fa-sort-up" v-show="isAsc === true && sortBy === 'tot'"></i>
+            <i class="fas fa-sort-down" v-show="isAsc === false && sortBy === 'tot'"></i>
+          </th>
           <th>資料更新時間</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="s in ubikeStops">
+        <tr v-for="s in sort">
           <td>{{ s.sno }}</td>
           <td>{{ s.sna }}</td>
           <td>{{ s.sarea }}</td>
@@ -41,6 +70,26 @@
       </tbody>
 
     </table>
+    <!-- {{page}} -->
+    <nav aria-label="Page navigation example" v-if="sort.length !== 0">
+      <ul class="pagination">
+        <li class="page-item" @click="pageCtrl('prev')" :class=" { 'disabled' : pageNav.current === 0 }">
+          <a class="page-link" href="###" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+
+        <li class="page-item" v-for="(p, idx) in pages" @click="changePage(p)" :class=" { 'active' : page === p+1}">
+          <a class="page-link" href="###">{{p+1}}</a>
+        </li>
+
+        <li class="page-item" @click="pageCtrl('next')" :class=" { 'disabled' : pageNav.current === pageNav.last  }">
+          <a class="page-link" href="###" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
   </div>
 
@@ -48,4 +97,5 @@
   <script src="./scripts.js?v=2020081401"></script>
 
 </body>
+
 </html>
