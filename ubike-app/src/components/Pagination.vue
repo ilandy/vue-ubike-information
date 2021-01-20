@@ -59,26 +59,26 @@ export default {
       currentPage (){
           this.$emit('updateCurrent', this.currentPage);
       }
+      
   },
   methods: {
     pageDirection (direct){
-       
-        this.maxPage = Math.ceil(this.all / this.pageItems)-1
-
         if (direct === 'next' && this.pageRow < this.maxPage ) {
             this.pageRow++;
+            this.currentPage = this.pageRow * this.pageItems + 1
+
             // console.log(1)
         }
         if (direct === 'prev' && this.pageRow > 0 ) {
             this.pageRow--;
+            this.currentPage = this.pageRow * this.pageItems + 1
         }
-        this.currentPage = this.pageRow * this.pageItems + 1
 
     }
 
   },
   created(){
-       
+        this.maxPage = Math.ceil(this.all / this.pageItems)-1
   }
 }
 </script>
